@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión | Inventario</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <main class="login-page">
+    <section class="login-visual">
+      <div class="visual-content">
+        <div class="brand">
+          <div class="brand-mark">N</div>
+          <div>
+            <strong>NOVENTIA</strong>
+            <span>Control de Inventario</span>
+          </div>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">INVENTARIO</p>
+          <h1>Organiza, registra y supervisa la operación.</h1>
+          <p>
+            Planner de actividades, control diario, incidencias y reportes
+            centralizados en un solo sistema.
+          </p>
+        </div>
+
+        <div class="visual-footer">
+          <span>📦 Inventario</span>
+          <span>📅 Planner</span>
+          <span>📊 Reportes</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="login-panel">
+      <div class="login-card">
+        <div class="mobile-brand">
+          <div class="brand-mark">N</div>
+          <strong>NOVENTIA</strong>
+        </div>
+
+        <p class="eyebrow">ACCESO AL SISTEMA</p>
+        <h2>Bienvenido</h2>
+        <p class="subtitle">Ingresa con tu cuenta autorizada.</p>
+
+        <form id="loginForm">
+          <label>
+            Correo electrónico
+            <input
+              type="email"
+              id="loginEmail"
+              autocomplete="email"
+              placeholder="correo@noventia.com.mx"
+              required
+            >
+          </label>
+
+          <label>
+            Contraseña
+            <div class="password-wrap">
+              <input
+                type="password"
+                id="loginPassword"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                required
+              >
+              <button type="button" id="togglePassword" aria-label="Mostrar contraseña">👁️</button>
+            </div>
+          </label>
+
+          <button class="login-btn" id="loginBtn" type="submit">
+            Iniciar sesión
+          </button>
+        </form>
+
+        <p class="error-message" id="authError"></p>
+        <p class="login-note">Acceso exclusivo para personal autorizado.</p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="login.js"></script>
+</body>
+</html>

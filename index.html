@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventario | Planner & Control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">N</div>
+        <div>
+          <strong>NOVENTIA</strong>
+          <span>Inventario</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboard">🏠 <span>Dashboard</span></button>
+        <button class="nav-item" data-view="planner">📅 <span>Planner</span></button>
+        <button class="nav-item" data-view="activities">📋 <span>Actividades</span></button>
+        <button class="nav-item" data-view="operation">📦 <span>Operación</span></button>
+        <button class="nav-item" data-view="incidents">⚠️ <span>Incidencias</span></button>
+        <button class="nav-item" data-view="reports">📊 <span>Reportes</span></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="avatar">DG</div>
+          <div>
+            <strong>Dilan Gil</strong>
+            <span>Responsable de inventario</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button id="menuBtn" class="icon-btn menu-btn">☰</button>
+        <div>
+          <p class="eyebrow">INVENTARIO</p>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <span class="role-pill" id="rolePill">Usuario</span>
+          <span class="today" id="todayLabel"></span>
+          <button class="primary-btn" id="quickTaskBtn">+ Nueva actividad</button>
+          <button class="ghost-btn" id="logoutBtn">Salir</button>
+        </div>
+      </header>
+
+      <section class="view active" id="dashboard">
+        <div class="section-heading">
+          <div>
+            <h2>Resumen operativo</h2>
+            <p>Estado general del área de inventario.</p>
+          </div>
+          <select id="dashboardPeriod" class="control">
+            <option value="today">Hoy</option>
+            <option value="week" selected>Esta semana</option>
+            <option value="month">Este mes</option>
+          </select>
+        </div>
+
+        <div class="kpi-grid">
+          <article class="kpi-card"><span>📦</span><div><small>Productos escaneados</small><strong id="kpiProducts">0</strong></div></article>
+          <article class="kpi-card"><span>🗃️</span><div><small>Cajas procesadas</small><strong id="kpiBoxes">0</strong></div></article>
+          <article class="kpi-card"><span>🔎</span><div><small>SKU revisados</small><strong id="kpiSku">0</strong></div></article>
+          <article class="kpi-card"><span>⚠️</span><div><small>Diferencias</small><strong id="kpiDiff">0</strong></div></article>
+          <article class="kpi-card"><span>🛠️</span><div><small>Errores corregidos</small><strong id="kpiFixed">0</strong></div></article>
+          <article class="kpi-card"><span>✅</span><div><small>Cumplimiento</small><strong id="kpiCompliance">0%</strong></div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <div><h3>Avance semanal</h3><p>Actividades completadas por día.</p></div>
+            </div>
+            <div id="weeklyBars" class="bar-chart"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div><h3>Distribución por estado</h3><p>Situación actual de actividades.</p></div>
+            </div>
+            <div id="statusSummary" class="status-summary"></div>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div><h3>🚨 Requieren atención</h3><p>Actividades vencidas o de prioridad urgente.</p></div>
+            <button class="text-btn" data-go="activities">Ver todas</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Actividad</th><th>Proceso</th><th>Prioridad</th><th>Estado</th><th>Fecha límite</th></tr></thead>
+              <tbody id="attentionTable"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="view" id="planner">
+        <div class="section-heading">
+          <div><h2>Planner de actividades</h2><p>Visualiza el trabajo por día, semana o mes.</p></div>
+          <div class="segmented">
+            <button class="seg-btn active" data-planner="day">Día</button>
+            <button class="seg-btn" data-planner="week">Semana</button>
+            <button class="seg-btn" data-planner="month">Mes</button>
+          </div>
+        </div>
+        <div class="panel planner-panel">
+          <div class="planner-toolbar">
+            <button class="icon-btn" id="plannerPrev">←</button>
+            <h3 id="plannerTitle"></h3>
+            <button class="icon-btn" id="plannerNext">→</button>
+            <button class="ghost-btn" id="plannerToday">Hoy</button>
+          </div>
+          <div id="plannerContent"></div>
+        </div>
+      </section>
+
+      <section class="view" id="activities">
+        <div class="section-heading">
+          <div><h2>Actividades</h2><p>Alta, seguimiento y cierre de tareas.</p></div>
+          <button class="primary-btn" id="newActivityBtn">+ Nueva actividad</button>
+        </div>
+        <div class="filters panel">
+          <input id="activitySearch" class="control" placeholder="Buscar actividad..." />
+          <select id="filterStatus" class="control"><option value="">Todos los estados</option></select>
+          <select id="filterProcess" class="control"><option value="">Todos los procesos</option></select>
+          <select id="filterPriority" class="control"><option value="">Todas las prioridades</option></select>
+        </div>
+        <div class="panel">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Actividad</th><th>Proceso</th><th>Prioridad</th><th>Estado</th><th>Fecha</th><th>Avance</th><th></th></tr></thead>
+              <tbody id="activitiesTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="operation">
+        <div class="section-heading">
+          <div><h2>Registro diario</h2><p>Captura los resultados operativos de la jornada.</p></div>
+        </div>
+        <form id="operationForm" class="panel form-grid">
+          <label>Fecha<input type="date" id="opDate" required /></label>
+          <label>Productos escaneados<input type="number" id="opProducts" min="0" value="0" /></label>
+          <label>Cajas procesadas<input type="number" id="opBoxes" min="0" value="0" /></label>
+          <label>SKU revisados<input type="number" id="opSku" min="0" value="0" /></label>
+          <label>Diferencias encontradas<input type="number" id="opDiff" min="0" value="0" /></label>
+          <label>Errores corregidos<input type="number" id="opFixed" min="0" value="0" /></label>
+          <label>% completado<input type="number" id="opCompletion" min="0" max="100" value="0" /></label>
+          <label class="full">Observaciones<textarea id="opNotes" rows="4" placeholder="Comentarios de la jornada..."></textarea></label>
+          <div class="full form-actions"><button class="primary-btn" type="submit">Guardar jornada</button></div>
+        </form>
+        <div class="panel">
+          <div class="panel-head"><div><h3>Historial</h3><p>Últimos registros operativos.</p></div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Fecha</th><th>Productos</th><th>Cajas</th><th>SKU</th><th>Diferencias</th><th>Corregidos</th><th>Avance</th></tr></thead>
+              <tbody id="operationTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="incidents">
+        <div class="section-heading">
+          <div><h2>Incidencias</h2><p>Errores, duplicados, diferencias y devoluciones.</p></div>
+          <button class="primary-btn" id="newIncidentBtn">+ Registrar incidencia</button>
+        </div>
+        <div class="kpi-grid small">
+          <article class="kpi-card"><span>⚠️</span><div><small>Abiertas</small><strong id="incOpen">0</strong></div></article>
+          <article class="kpi-card"><span>🔧</span><div><small>En corrección</small><strong id="incWorking">0</strong></div></article>
+          <article class="kpi-card"><span>✅</span><div><small>Resueltas</small><strong id="incSolved">0</strong></div></article>
+        </div>
+        <div class="panel">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Incidencia</th><th>Tipo</th><th>SKU/Caja</th><th>Prioridad</th><th>Estado</th><th>Fecha</th><th></th></tr></thead>
+              <tbody id="incidentsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="reports">
+        <div class="section-heading">
+          <div><h2>Reportes</h2><p>Resumen de productividad y cumplimiento.</p></div>
+        </div>
+        <div class="empty-state panel">
+          <div class="empty-icon">📊</div>
+          <h3>Módulo preparado</h3>
+          <p>En la siguiente fase conectaremos gráficas, filtros por periodo y exportación a Excel.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="activityModal">
+    <div class="modal">
+      <div class="modal-head"><h3 id="activityModalTitle">Nueva actividad</h3><button class="icon-btn modal-close" data-close="activityModal">✕</button></div>
+      <form id="activityForm" class="form-grid">
+        <input type="hidden" id="activityId">
+        <label class="full">Actividad<input id="actTitle" required placeholder="Ej. Revisión de errores de inventario"></label>
+        <label>Proceso<select id="actProcess" required></select></label>
+        <label>Prioridad<select id="actPriority" required></select></label>
+        <label>Estado<select id="actStatus" required></select></label>
+        <label>Fecha<input type="date" id="actDate" required></label>
+        <label>Fecha límite<input type="date" id="actDueDate" required></label>
+        <label>Frecuencia<select id="actFrequency"></select></label>
+        <label>% Avance<input type="number" id="actProgress" min="0" max="100" value="0"></label>
+        <label class="full">Observaciones<textarea id="actNotes" rows="3"></textarea></label>
+        <div class="full form-actions">
+          <button type="button" class="ghost-btn modal-close" data-close="activityModal">Cancelar</button>
+          <button type="submit" class="primary-btn">Guardar actividad</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="incidentModal">
+    <div class="modal">
+      <div class="modal-head"><h3>Registrar incidencia</h3><button class="icon-btn modal-close" data-close="incidentModal">✕</button></div>
+      <form id="incidentForm" class="form-grid">
+        <label class="full">Título<input id="incTitle" required placeholder="Ej. SKU duplicado en categoría juguetes"></label>
+        <label>Tipo<select id="incType"></select></label>
+        <label>SKU / Caja<input id="incReference" placeholder="Código o caja"></label>
+        <label>Prioridad<select id="incPriority"></select></label>
+        <label>Estado<select id="incStatus"></select></label>
+        <label>Fecha<input type="date" id="incDate" required></label>
+        <label class="full">Descripción<textarea id="incDescription" rows="4"></textarea></label>
+        <div class="full form-actions">
+          <button type="button" class="ghost-btn modal-close" data-close="incidentModal">Cancelar</button>
+          <button type="submit" class="primary-btn">Guardar incidencia</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
