@@ -71,8 +71,8 @@ background-color: #fff;
 }
 
 .login-page{
-  background-image: url("img/back.png");
-      background-size: cover;
+    background-image: url("img/back.png");
+    background-size: cover;
 }
 
 .login-card h2{
