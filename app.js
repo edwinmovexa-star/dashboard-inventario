@@ -38,6 +38,14 @@ let unsubs = [];
 let plannerMode = "day";
 let plannerDate = new Date();
 
+const INVENTORY_GOALS = {
+
+  weeklyProducts: 1680,
+
+  monthlyProducts: 6720
+
+};
+
 function saveAll() {}
 
 function esc(s = "") {
@@ -197,6 +205,7 @@ function renderOperation() {
         <td>${r.diff}</td>
         <td>${r.fixed}</td>
         <td>${r.completion}%</td></tr>`).join("") || `<tr><td colspan="7">Aún no hay registros.</td></tr>`;
+        renderOperationProgress();
 }
 
 function renderIncidents() {
@@ -373,10 +382,254 @@ function renderAll() {
     renderPlanner();
 }
 
-function getMonday(date) {
+function getWeekStart(date = new Date()) {
 
   const d = new Date(date);
+  const day =
+    d.getDay();
 
+  const diff =
+    day === 0
+      ? -6
+      : 1 - day;
+
+  d.setDate(
+    d.getDate() + diff
+  );
+
+  d.setHours(0,0,0,0);
+
+  return d;
+}
+
+function getWeekEnd(date = new Date()) {
+
+  const start =
+    getWeekStart(date);
+
+  const end =
+    new Date(start);
+
+  end.setDate(
+    start.getDate() + 6
+  );
+
+  end.setHours(23,59,59,999);
+
+  return end;
+}
+
+function filterOperationsByWorker(records,workerId) {
+
+  if (
+    !workerId ||
+    workerId === "all"
+  ) {
+    return records;
+  }
+
+  return records.filter(
+    record =>
+      record.workerId === workerId
+  );
+}
+
+function getWeeklyOperations(records) {
+
+  const start =
+    getWeekStart();
+
+  const end =
+    getWeekEnd();
+
+  return records.filter(
+    record => {
+
+      if (!record.date)
+        return false;
+
+      const date =
+        new Date(
+          `${record.date}T12:00:00`
+        );
+
+      return (
+        date >= start &&
+        date <= end
+      );
+
+    }
+  );
+}
+
+function getMonthlyOperations(records) {
+
+  const now =
+    new Date();
+
+  const month =
+    now.getMonth();
+
+  const year =
+    now.getFullYear();
+
+  return records.filter(
+    record => {
+
+      if (!record.date)
+        return false;
+
+      const date =
+        new Date(
+          `${record.date}T12:00:00`
+        );
+
+      return (
+        date.getMonth() === month &&
+        date.getFullYear() === year
+      );
+
+    }
+  );
+}
+
+function calculateOperationTotals(records) {
+
+  return records.reduce(
+    (totals, record) => {
+
+      totals.products +=
+        Number(record.products) || 0;
+      totals.boxes +=
+        Number(record.boxes) || 0;
+      totals.fixed +=
+        Number(record.fixed) || 0;
+      totals.diff +=
+        Number(record.diff) || 0;
+      return totals;
+    },
+    {
+      products: 0,
+      boxes: 0,
+      fixed: 0,
+      diff: 0
+    }
+  );
+}
+
+function renderOperationProgress() {
+
+  const filter =
+    $("operationWorkerFilter")
+      ?.value || "all";
+
+  // FILTRAR PERSONA
+
+  const filteredRecords =
+    filterOperationsByWorker(
+      operations,
+      filter
+    );
+
+  // SEMANA
+
+  const weeklyRecords =
+    getWeeklyOperations(
+      filteredRecords
+    );
+  const weeklyTotals =
+    calculateOperationTotals(
+      weeklyRecords
+    );
+  const weeklyPercentage =
+    Math.min(
+      100,
+      (weeklyTotals.products / INVENTORY_GOALS.weeklyProducts) * 100
+    );
+
+  // MES
+
+  const monthlyRecords =
+    getMonthlyOperations(
+      filteredRecords
+    );
+  const monthlyTotals =
+    calculateOperationTotals(
+      monthlyRecords
+    );
+  const monthlyPercentage =
+    Math.min(
+      100,
+      ( monthlyTotals.products / INVENTORY_GOALS.monthlyProducts) * 100
+    );
+
+  // AVANCE SEMANAL
+  $("weeklyProgressValue")
+    .textContent =
+      `${Math.round(weeklyPercentage)}%`;
+
+  $("weeklyProgressText")
+    .textContent =
+      `${weeklyTotals.products.toLocaleString(
+        "es-MX"
+      )} / ${INVENTORY_GOALS.weeklyProducts.toLocaleString(
+        "es-MX"
+      )} productos`;
+
+
+  $("weeklyProgressBar")
+    .style.width =
+      `${weeklyPercentage}%`;
+
+  // AVANCE MENSUAL
+
+  $("monthlyProgressValue")
+    .textContent =
+      `${Math.round(monthlyPercentage)}%`;
+
+
+  $("monthlyProgressText")
+    .textContent =
+      `${monthlyTotals.products.toLocaleString(
+        "es-MX"
+      )} / ${INVENTORY_GOALS.monthlyProducts.toLocaleString(
+        "es-MX"
+      )} productos`;
+
+
+  $("monthlyProgressBar")
+    .style.width =`${monthlyPercentage}%`;
+
+  // INDICADORES DEL MES
+
+  $("operationProducts")
+    .textContent =
+      monthlyTotals.products
+        .toLocaleString("es-MX");
+
+
+  $("operationBoxes")
+    .textContent =
+      monthlyTotals.boxes
+        .toLocaleString("es-MX");
+
+
+  $("operationFixed")
+    .textContent =
+      monthlyTotals.fixed
+        .toLocaleString("es-MX");
+
+
+  $("operationDifferences")
+    .textContent =
+      monthlyTotals.diff
+        .toLocaleString("es-MX");
+
+}
+
+
+function getMonday(date) {
+  const d = new Date(date);
   const day =
     d.getDay() === 0
       ? 6
@@ -404,12 +657,7 @@ function getSunday(date) {
     monday.getDate() + 6
   );
 
-  sunday.setHours(
-    23,
-    59,
-    59,
-    999
-  );
+  sunday.setHours(23,59,59,999);
 
   return sunday;
 }
@@ -429,17 +677,11 @@ function exportOperationReport(records,fileName,sheetName) {
       r.workerName || "Sin responsable",
 
     "Productos escaneados": r.products || 0,
-
     "Cajas procesadas": r.boxes || 0,
-
     "SKU revisados": r.sku || 0,
-
     "Diferencias encontradas": r.diff || 0,
-
     "Errores corregidos": r.fixed || 0,
-
     "Porcentaje completado": `${r.completion || 0}%`,
-
     Observaciones:
       r.notes || ""
 
@@ -450,8 +692,6 @@ function exportOperationReport(records,fileName,sheetName) {
   const workbook =XLSX.utils.book_new();
 
   XLSX.utils.book_append_sheet(workbook,worksheet,sheetName);
-
-
   XLSX.writeFile(workbook, fileName);
 }
 
@@ -565,6 +805,12 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".modal-backdrop").forEach(m => m.addEventListener("click", e => {
         if (e.target === m) m.classList.add("hidden")
     }));
+
+    $("operationWorkerFilter")
+        ?.addEventListener(
+            "change",
+            renderOperationProgress
+        );
 
     $("downloadWeeklyReport")
         .addEventListener("click",downloadWeeklyReport);

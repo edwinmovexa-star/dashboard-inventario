@@ -148,6 +148,95 @@
       </section>
 
       <section class="view" id="operation">
+
+        <!-- GRADICA -->
+      <div class="operation-progress-grid">
+        <!-- AVANCE SEMANAL -->
+        <article class="panel progress-card">
+          <div class="panel-head">
+            <div>
+              <h3>📦 Avance semanal</h3>
+              <p>Meta de productos procesados.</p>
+            </div>
+          </div>
+          <div class="progress-main">
+            <strong id="weeklyProgressValue">0%</strong>
+            <span id="weeklyProgressText">0 / 1,680 productos</span>
+          </div>
+          <div class="goal-progress">
+            <div class="goal-progress-bar" id="weeklyProgressBar">
+            </div>
+          </div>
+        </article>
+
+        <!-- AVANCE MENSUAL -->
+        <article class="panel progress-card">
+          <div class="panel-head">
+            <div>
+              <h3>📊 Avance mensual</h3>
+              <p>Meta mensual aproximada.</p>
+            </div>
+          </div>
+
+          <div class="progress-main">
+            <strong id="monthlyProgressValue">0%</strong>
+            <span id="monthlyProgressText">0 / 6,720 productos</span>
+          </div>
+
+          <div class="goal-progress">
+            <div class="goal-progress-bar" id="monthlyProgressBar">
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="operation-toolbar">
+      <label>Visualizar:
+        <select id="operationWorkerFilter">
+          <option value="all"> General</option>
+          <option value="dilan"> Dilan Gil</option>
+          <option value="auxiliar"> Ayudante</option>
+        </select>
+      </label>
+    </div>
+
+      <!-- INDICADORES -->
+      <div class="operation-indicators">
+        <article class="kpi-card">
+          <span>📦</span>
+          <div>
+            <small>Productos procesados</small>
+            <strong id="operationProducts">0</strong>
+          </div>
+        </article>
+        <article class="kpi-card">
+          <span>🗃️</span>
+          <div>
+            <small>Cajas procesadas</small>
+            <strong id="operationBoxes">0</strong>
+          </div>
+        </article>
+
+        <article class="kpi-card">
+          <span>🛠️</span>
+          <div>
+            <small>Errores corregidos</small>
+            <strong id="operationFixed">0</strong>
+          </div>
+        </article>
+
+
+        <article class="kpi-card">
+          <span>⚠️</span>
+          <div>
+            <small>Diferencias encontradas</small>
+            <strong id="operationDifferences">0</strong>
+          </div>
+        </article>
+      </div>
+
+
+
         <!-- <div class="section-heading">
           <div><h2>Registro diario</h2><p>Captura los resultados operativos de la jornada.</p></div>
         </div> -->
