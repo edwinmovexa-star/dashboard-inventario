@@ -59,11 +59,12 @@ input:focus{border-color:#70c2c8;box-shadow:0 0 0 4px rgba(0,184,196,.10)}
     border-radius: 10px;
     -webkit-box-shadow: 10px 11px 14px 6px #666666; 
 box-shadow: 10px 11px 14px 6px #666666;
-background-color: #f5f5f5;
+background-color: #fff;
 }
 
 .login-page img{
   margin: 0 auto;
+  display: block;
 }
 .login-panel{
   background-color: transparent;
@@ -72,4 +73,8 @@ background-color: #f5f5f5;
 .login-page{
   background-image: url("/img/back.png");
       background-size: cover;
+}
+
+.login-card h2{
+  text-align: center;
 }
