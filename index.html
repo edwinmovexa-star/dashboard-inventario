@@ -14,10 +14,8 @@
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-mark">N</div>
-        <div>
-          <strong>NOVENTIA</strong>
-          <span>Inventario</span>
+        <div class="brand-img">
+          <img src="img/logo2.png">
         </div>
       </div>
 
@@ -150,11 +148,52 @@
       </section>
 
       <section class="view" id="operation">
-        <div class="section-heading">
+        <!-- <div class="section-heading">
           <div><h2>Registro diario</h2><p>Captura los resultados operativos de la jornada.</p></div>
+        </div> -->
+        <div class="section-heading">
+
+          <div>
+            <h2>Registro diario</h2>
+            <p>
+              Captura los resultados operativos de la jornada.
+            </p>
+          </div>
+
+          <div class="report-actions">
+
+            <button
+              class="ghost-btn"
+              id="downloadWeeklyReport"
+            >
+              📥 Reporte semanal
+            </button>
+
+            <button
+              class="primary-btn"
+              id="downloadMonthlyReport"
+            >
+              📊 Reporte mensual
+            </button>
+
+          </div>
+
         </div>
         <form id="operationForm" class="panel form-grid">
           <label>Fecha<input type="date" id="opDate" required /></label>
+          <!-- NUEVO -->
+          <label>
+            Persona
+            <select id="opWorker" required>
+              <option value="dilan">
+                Dilan Gil
+              </option>
+
+              <option value="auxiliar">
+                Ayudante de Inventario
+              </option>
+            </select>
+          </label>
           <label>Productos escaneados<input type="number" id="opProducts" min="0" value="0" /></label>
           <label>Cajas procesadas<input type="number" id="opBoxes" min="0" value="0" /></label>
           <label>SKU revisados<input type="number" id="opSku" min="0" value="0" /></label>
@@ -168,7 +207,7 @@
           <div class="panel-head"><div><h3>Historial</h3><p>Últimos registros operativos.</p></div></div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Fecha</th><th>Productos</th><th>Cajas</th><th>SKU</th><th>Diferencias</th><th>Corregidos</th><th>Avance</th></tr></thead>
+              <thead><tr><th>Fecha</th><th>Responsable</th><th>Productos</th><th>Cajas</th><th>SKU</th><th>Diferencias</th><th>Corregidos</th><th>Avance</th></tr></thead>
               <tbody id="operationTable"></tbody>
             </table>
           </div>
@@ -250,6 +289,9 @@
   </div>
 
   <div class="toast" id="toast"></div>
+  <script
+  src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js">
+</script>
   <script type="module" src="app.js"></script>
 </body>
 </html>

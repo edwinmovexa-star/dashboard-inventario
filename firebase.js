@@ -78,14 +78,29 @@ export function deleteRecord(name, id) {
   return deleteDoc(doc(db, name, id));
 }
 
-export function saveDailyRecord(data) {
-  return setDoc(
-    doc(db, "dailyRecords", data.date),
-    {
-      ...data,
-      updatedAt: serverTimestamp(),
-      createdAt: serverTimestamp()
-    },
-    { merge: true }
+export async function saveDailyRecord(data) {
+
+  const recordId = `${data.date}_${data.workerId}`;
+
+  const reference = doc(
+    db,
+    "dailyRecords",
+    recordId
   );
+
+  // Revisamos si ya existe un registro
+  const existingRecord = await getDoc(reference);
+
+  if (existingRecord.exists()) {
+    throw new Error("DAILY_RECORD_EXISTS");
+  }
+
+  await setDoc(reference, {
+    ...data,
+
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+
+  return true;
 }
